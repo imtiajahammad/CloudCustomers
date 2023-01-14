@@ -8,6 +8,7 @@ using Xunit;
 using Moq;
 using CloudCustomers.API.Services;
 using CloudCustomers.API.Models;
+using CloudCustomers.UnitTests.Fixtures;
 
 public class TestUsersController
     {
@@ -17,18 +18,7 @@ public class TestUsersController
             //Arrange
             var mockUserService = new Mock<IUsersService>();
             mockUserService.Setup(service => service.GetAllUsers())
-                            .ReturnsAsync(new List<User>(){
-                                new() {
-                                    Id = 1,
-                                    Name = "Jane",
-                                    Address = new Address(){
-                                        Street = "123 Main St",
-                                        City = "Madison",
-                                        ZipCode= "53704"
-                                    },
-                                    Email = "jane@example.com"
-                                }
-                            });
+                            .ReturnsAsync(UsersFixture.GetTestUsers());
             var sut = new UsersController(mockUserService.Object);
             //Act
             var result =(OkObjectResult) await sut.Get();
@@ -57,18 +47,7 @@ public class TestUsersController
             var mockUsersService = new Mock<IUsersService>();
             mockUsersService
                             .Setup(service => service.GetAllUsers())
-                            .ReturnsAsync(new List<User>(){
-                                new User() {
-                                    Id = 1,
-                                    Name = "Jane",
-                                    Address = new Address(){
-                                        Street = "123 Main St",
-                                        City = "Madison",
-                                        ZipCode= "53704"
-                                    },
-                                    Email = "jane@example.com"
-                                }
-                            });
+                            .ReturnsAsync(UsersFixture.GetTestUsers());
             var sut = new UsersController(mockUsersService.Object);
 
             //Act
