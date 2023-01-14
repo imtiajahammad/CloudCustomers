@@ -3,16 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CloudCustomers.API.Models;
+using Microsoft.Extensions.Options;
+using UsersAPI.Config;
 
 public class UsersService : IUsersService
 {
-    public UsersService()
+    private readonly HttpClient _httpClient;
+    private readonly UsersApiOptions _apiConfig;
+
+    public UsersService(HttpClient httpClient,
+                        IOptions<UsersApiOptions> apiConfig)
     {
-        
+        _httpClient=httpClient;
+        _apiConfig = apiConfig.Value;
     }
 
-    public Task<List<User>> GetAllUsers()
+    public async Task<List<User>> GetAllUsers()
     {
-        throw new NotImplementedException();
+        var usersResponse = await _httpClient.GetAsync(_apiConfig.Endpoint);
+        if(usersResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return new List<User>();
+        }
+        var responseContent = usersResponse.Content;
+        var allUsers = await responseContent.ReadFromJsonAsync<List<User>>();
+        return allUsers.ToList();
     }
 }

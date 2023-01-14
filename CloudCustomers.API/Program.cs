@@ -1,4 +1,5 @@
 using CloudCustomers.API.Services;
+using UsersAPI.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,9 @@ app.MapControllers();
 app.Run();
 
 void ConfigureServices(IServiceCollection services){
+    services.Configure<UsersApiOptions>(builder.Configuration.GetSection("UsersApiOptions"));
     services.AddTransient<IUsersService,UsersService>();
+    services.AddHttpClient<IUsersService,UsersService>();
 }
 /*
 https://www.youtube.com/watch?v=ULJ3UEezisw&list=PLT7TgynUtYZSaNjcvI2QxjWi8sT1iV3c-&index=2&ab_channel=WesDoyle
