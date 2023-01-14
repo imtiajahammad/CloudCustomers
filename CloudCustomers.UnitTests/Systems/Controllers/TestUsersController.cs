@@ -5,15 +5,20 @@ using CloudCustomers.API.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
+using Moq;
+using CloudCustomers.API.Services;
+using CloudCustomers.API.Models;
 
-
-    public class TestUsersController
+public class TestUsersController
     {
         [Fact]
         public async Task Get_OnSuccess_ReturnsStatusCode200()
         {
             //Arrange
-             var sut = new UsersController();
+            var mockUserService = new Mock<IUsersService>();
+            mockUserService.Setup(service => service.GetAllUsers())
+                            .ReturnsAsync(new List<User>());
+            var sut = new UsersController(mockUserService.Object);
             //Act
             var result =(OkObjectResult) await sut.Get();
             //Assert
@@ -21,14 +26,18 @@ using Xunit;
         }
 
         [Fact]
-        public async Task Get_OnSuccess_InvokesUserServices()
+        public async Task Get_OnSuccess_InvokesUsersServiceExactlyOnce()
         {
             //Arrange
-            var sut = new UsersController();
+            var mockUserService =new Mock<IUsersService>();
+            mockUserService.Setup(service => service.GetAllUsers())
+            .ReturnsAsync(new List<User>());
+            var sut = new UsersController(mockUserService.Object);
             //Act
-            var result = (OkObjectResult) await sut.Get();
+            //var result = (OkObjectResult) await sut.Get();
+            var result = await sut.Get();
             //Asert
-            
+            mockUserService.Verify(service => service.GetAllUsers(),Times.Once());            
         }
 
     }

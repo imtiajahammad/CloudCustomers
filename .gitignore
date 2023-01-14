@@ -11,5 +11,11 @@
 # Built Visual Studio Code Extensions
 *.vsix
 
+# to ignore bin folders
 bin/
+# to ignore obj folders
 obj/
+
+# to ignore vs files
+.vs
+
